@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.15)
-project(MojProjekt VERSION 1.0.0 LANGUAGES CXX)
+project(JobScheduler VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(moj_program
+add_executable(job_scheduler
         src/main.cpp
         src/tasks/Task.cpp
         include/tasks/Task.hpp
@@ -34,18 +34,13 @@ add_executable(moj_program
         include/helpers/DateTimeUtils.hpp
         include/helpers/TaskComparators.hpp
         include/helpers/EnumUtils.hpp
+        include/enums/Command.hpp
 )
 
-target_include_directories(moj_program PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(job_scheduler PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 if(MSVC)
-    target_compile_options(moj_program PRIVATE /W4)
+    target_compile_options(job_scheduler PRIVATE /W4)
 else()
-    target_compile_options(moj_program PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(job_scheduler PRIVATE -Wall -Wextra -Wpedantic)
 endif()
-
-configure_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/hejo.txt"
-        "${CMAKE_CURRENT_BINARY_DIR}/hejo.txt"
-        COPYONLY
-)

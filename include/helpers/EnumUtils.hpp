@@ -1,5 +1,8 @@
-#include "enums/TaskStatus.hpp"
+#pragma once
+
+#include "enums/Command.hpp"
 #include "enums/TaskMode.hpp"
+#include "enums/TaskStatus.hpp"
 
 #include <string>
 
@@ -32,4 +35,26 @@ inline std::string taskModeToShortString(TaskMode mode) {
   case TaskMode::CYCLIC:    return "C";
   }
   return "?";
+}
+
+inline Command stringToCommand(const std::string& cmd) {
+  if (cmd == "q")      return Command::QUIT;
+  if (cmd == "task")   return Command::TASK;
+  if (cmd == "status") return Command::STATUS;
+  if (cmd == "cancel") return Command::CANCEL;
+  if (cmd == "report") return Command::REPORT;
+  return Command::UNKNOWN;
+}
+
+
+inline std::string commandToString(Command cmd) {
+  switch (cmd) {
+  case Command::QUIT:    return "q";
+  case Command::TASK:    return "task";
+  case Command::STATUS:  return "status";
+  case Command::CANCEL:  return "cancel";
+  case Command::REPORT:  return "report";
+  case Command::UNKNOWN:
+    default: return "unknown";
+  }
 }

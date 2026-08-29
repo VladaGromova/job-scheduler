@@ -8,7 +8,7 @@ private:
   Scheduler &scheduler;
   TaskFactory& taskFactory;
   Logger& logger;
-  void getTasks();
+  bool getTasks();
   void processCommand(const std::string& command);
   void loadTasksFromFile();
   void parseInput();
