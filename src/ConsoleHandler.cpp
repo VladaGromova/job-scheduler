@@ -30,7 +30,7 @@ void printTaskTableHeader() {
              << std::setw(COL_EXEC_TIME_WIDTH) << "EXEC TIME"
              << std::setw(COL_CYCLE_WIDTH) << "CYCLE(ms)"
              << "\n";
-  std::cout << std::string(TABLE_WIDTH, '-') << "\n";
+  std::cout << std::string(TABLE_WIDTH, '-') << std::endl;
 }
 
 void printTaskRow(const TaskInfo& info) {
@@ -80,7 +80,6 @@ bool ConsoleHandler::addTaskFromLine(const std::string &line) const {
   if (auto task = taskFactory.createTaskFromLine(line)) {
     std::string id = task->getId();
     scheduler.addTask(std::move(task));
-    // std::cout << "Task added: " << id << "\n";
     return true;
   }
   std::cout << "Invalid task format, skipped: " << line << "\n";
@@ -197,9 +196,7 @@ bool ConsoleHandler::loadTasksFromFile() {
     return false;
   }
   int successCount = addTasksFromStream(file);
-  std::cout << "Successfully loaded " << successCount << " tasks from "
-            << filepath << "\n";
-  return true;
+  return successCount > 0;
 }
 
 bool ConsoleHandler::parseInput() {
@@ -209,7 +206,6 @@ bool ConsoleHandler::parseInput() {
          "type: 1 - computational, 2 - file operations, 3 - data downloading\n"
          "Type d when done.\n";
   int successCount = addTasksFromStream(std::cin);
-  std::cout << "Successfully added " << successCount << " task(s).\n";
   return successCount > 0;
 }
 

@@ -24,8 +24,6 @@ bool ConfigManager::loadConfig(const std::string &configFilename) {
     if (retries >= 0)
       defaultMaxRetries = retries;
 
-    std::cout << "[ConfigManager] Configuration loaded successfully from "
-              << configFilename << "\n";
     return true;
   } else {
     std::cerr << "[ConfigManager] Error: Invalid config file format. Using "

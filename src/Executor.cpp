@@ -19,7 +19,6 @@ void Executor::stop() {
   if (!running.exchange(false)) {
     return;
   }
-  // scheduler.notifyAllWaiting();
   for (auto &t : workers) {
     if (t.joinable()) {
       t.join();

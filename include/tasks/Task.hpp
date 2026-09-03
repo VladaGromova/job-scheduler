@@ -4,6 +4,13 @@
 #include "../enums/TaskStatus.hpp"
 #include <string>
 
+/**
+ * @brief Representation of a task in Job Scheduler system.
+ *
+ * Holds the common state (priority, status, schedule, retry count) shared
+ * by all task types. Concrete execution logic is delegated to derived
+ * classes via execute(). Task manages its metadata.
+ */
 class Task {
 protected:
   std::string id;
@@ -24,6 +31,12 @@ protected:
   std::atomic<bool> cancelRequested{false};
 
 public:
+  /**
+    * @brief Constructs a task with the given parameters.
+    * @param requestedStart Required for SCHEDULED/CYCLIC mode.
+    * @param cycle Required for CYCLIC mode.
+    * @throws std::invalid_argument if the mode requires a time parameter that was not provided.
+    */
   Task(std::string id, std::string fileName, int priority, int maxRetries,
        TaskMode mode,
        std::optional<std::chrono::time_point<std::chrono::system_clock>>
@@ -32,7 +45,14 @@ public:
   virtual ~Task() = default;
   Task(const Task &) = delete;
   Task &operator=(const Task &) = delete;
+
+  /**
+     * @brief Simulates task execution.
+     * @return true on success, false on failure
+     */
   virtual bool execute() = 0;
+
+  /// @brief Returns a human-readable task type name (for logging and display).
   virtual std::string taskTypeName() const = 0;
   void requestCancel() { cancelRequested.store(true); }
   void updateStatus(TaskStatus newStatus) { status = newStatus; }

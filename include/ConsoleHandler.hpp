@@ -2,6 +2,13 @@
 #include "Scheduler.hpp"
 #include "TaskFactory.hpp"
 
+/**
+ * @brief Handles user interaction through the terminal.
+ *
+ * Responsible for loading the initial set of tasks (from a file or
+ * entered manually), then running the command loop (status/cancel/report/
+ * task/q) concurrently with the Scheduler and Executor threads.
+ */
 class ConsoleHandler {
 private:
   bool isRunning = false;
@@ -22,5 +29,7 @@ private:
 
 public:
   ConsoleHandler(Scheduler &sched, TaskFactory &factory, Logger &logger);
+
+  /// @brief Runs console interface (task loading, command loop)
   void start();
 };

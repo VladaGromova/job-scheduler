@@ -26,7 +26,7 @@ void Scheduler::addTask(std::unique_ptr<Task> task) {
         std::chrono::system_clock::now(), rawPtr->getId(), rawPtr->getStatus(),
         "Task scheduled in the past, marked as FAILED immediately"});
 
-    std::cout << "[SCH] Task " << rawPtr->getId()
+    std::cout << "Task " << rawPtr->getId()
               << " has a scheduled time in the past - marked as FAILED.\n";
     return;
   }
@@ -57,7 +57,6 @@ void Scheduler::addTask(std::unique_ptr<Task> task) {
   }
   logger.log(LogMessage{std::chrono::system_clock::now(), rawPtr->getId(),
                         rawPtr->getStatus(), "Task added to scheduler"});
-  std::cout << "[SCH] added " << rawPtr->getId() << '\n';
 }
 
 void Scheduler::start() {

@@ -1,6 +1,7 @@
 #pragma once
 #include "Task.hpp"
 
+/// @brief A computational task
 class ComputeTask : public Task {
 public:
   using Task::Task;
