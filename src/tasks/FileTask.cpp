@@ -3,12 +3,9 @@
 #include <filesystem>
 
 bool FileTask::execute() {
-  if (!std::filesystem::exists(fileName)) {
-    return false;
-  }
-  return true;
+  if (isCancelRequested()) return false;
+
+  return (std::rand() % 100) < 70;
 }
 
-std::string FileTask::taskTypeName() const {
-  return "FileTask";
-}
+std::string FileTask::taskTypeName() const { return "FileTask"; }

@@ -13,7 +13,8 @@ private:
   int numOfThreads;
   void worker(int workerId);
   std::mutex coutMutex;
-  void log(const int workerId, const std::string taskId, const std::string& message);
+  void log(int workerId, std::string taskId,
+           const std::string &message);
 
 public:
   Executor(Scheduler &scheduler, Logger &logger, int numOfThreads);

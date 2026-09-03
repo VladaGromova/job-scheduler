@@ -10,6 +10,4 @@ bool ComputeTask::execute() {
   return true;
 }
 
-std::string ComputeTask::taskTypeName() const {
-  return "ComputeTask";
-}
+std::string ComputeTask::taskTypeName() const { return "ComputeTask"; }

@@ -2,12 +2,10 @@
 
 #include <iostream>
 
-Executor::Executor(Scheduler &scheduler, Logger &logger, int numOfThreads) :
-scheduler(scheduler), logger(logger), numOfThreads(numOfThreads) {}
+Executor::Executor(Scheduler &scheduler, Logger &logger, int numOfThreads)
+    : scheduler(scheduler), logger(logger), numOfThreads(numOfThreads) {}
 
-Executor::~Executor() {
-  stop();
-}
+Executor::~Executor() { stop(); }
 
 void Executor::start() {
   running.store(true);
@@ -21,8 +19,8 @@ void Executor::stop() {
   if (!running.exchange(false)) {
     return;
   }
-  //scheduler.notifyAllWaiting();
-  for (auto& t : workers) {
+  // scheduler.notifyAllWaiting();
+  for (auto &t : workers) {
     if (t.joinable()) {
       t.join();
     }
@@ -32,7 +30,7 @@ void Executor::stop() {
 
 void Executor::worker(int workerId) {
   while (running.load()) {
-    Task* task = scheduler.getReadyTask();
+    Task *task = scheduler.getReadyTask();
 
     if (task == nullptr) {
       continue;
@@ -43,12 +41,8 @@ void Executor::worker(int workerId) {
     task->setStartedAt(std::chrono::system_clock::now());
 
     log(workerId, task->getId(), "started");
-    logger.log(LogMessage{
-        std::chrono::system_clock::now(),
-        task->getId(),
-        task->getStatus(),
-        "Task started"
-    });
+    logger.log(LogMessage{std::chrono::system_clock::now(), task->getId(),
+                          task->getStatus(), "Task started"});
 
     bool success = task->execute();
     task->setFinishedAt(std::chrono::system_clock::now());
@@ -60,20 +54,16 @@ void Executor::worker(int workerId) {
         task->updateStatus(TaskStatus::SCHEDULED);
         scheduler.rescheduleTask(task);
 
-
         log(workerId, task->getId(), "finished, rescheduled (cyclic)");
-        logger.log(LogMessage{
-            std::chrono::system_clock::now(), task->getId(), task->getStatus(),
-            "Task finished, rescheduled for next cycle"
-        });
+        logger.log(LogMessage{std::chrono::system_clock::now(), task->getId(),
+                              task->getStatus(),
+                              "Task finished, rescheduled for next cycle"});
       } else {
         task->updateStatus(TaskStatus::FINISHED);
 
         log(workerId, task->getId(), "finished");
-        logger.log(LogMessage{
-            std::chrono::system_clock::now(), task->getId(), task->getStatus(),
-            "Task finished successfully"
-        });
+        logger.log(LogMessage{std::chrono::system_clock::now(), task->getId(),
+                              task->getStatus(), "Task finished successfully"});
       }
     } else {
       task->incrementRetries();
@@ -85,23 +75,23 @@ void Executor::worker(int workerId) {
         log(workerId, task->getId(), "failed, retrying");
         logger.log(LogMessage{
             std::chrono::system_clock::now(), task->getId(), task->getStatus(),
-            "Task failed, retrying (" + std::to_string(task->getCurrentRetries()) +
-            "/" + std::to_string(task->getMaxRetries()) + ")"
-        });
+            "Task failed, retrying (" +
+                std::to_string(task->getCurrentRetries()) + "/" +
+                std::to_string(task->getMaxRetries()) + ")"});
       } else {
         task->updateStatus(TaskStatus::FAILED);
 
         log(workerId, task->getId(), "failed permanently");
-        logger.log(LogMessage{
-            std::chrono::system_clock::now(), task->getId(), task->getStatus(),
-            "Task failed permanently, no retries left"
-        });
+        logger.log(LogMessage{std::chrono::system_clock::now(), task->getId(),
+                              task->getStatus(),
+                              "Task failed permanently, no retries left"});
       }
     }
   }
 }
 
-void Executor::log(const int workerId, const std::string taskId, const std::string& message) {
+void Executor::log(const int workerId, const std::string taskId,
+                   const std::string &message) {
   std::lock_guard<std::mutex> lock(coutMutex);
-  std::cout << "[" << workerId << "] [" << taskId << "] "  << message << "\n";
+  std::cout << "[" << workerId << "] [" << taskId << "] " << message << "\n";
 }

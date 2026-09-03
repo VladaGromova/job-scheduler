@@ -22,38 +22,68 @@ protected:
   std::chrono::time_point<std::chrono::system_clock> nextExecutionTime;
   std::atomic<int> executorProcessId{-1};
   std::atomic<bool> cancelRequested{false};
+
 public:
-  Task(std::string id, std::string fileName, int priority,
-         int maxRetries, TaskMode mode,
-         std::optional<std::chrono::time_point<std::chrono::system_clock>>
-         requestedStart,
-         std::optional<std::chrono::milliseconds> cycle);
+  Task(std::string id, std::string fileName, int priority, int maxRetries,
+       TaskMode mode,
+       std::optional<std::chrono::time_point<std::chrono::system_clock>>
+           requestedStart,
+       std::optional<std::chrono::milliseconds> cycle);
   virtual ~Task() = default;
-  Task(const Task&) = delete;
-  Task& operator=(const Task&) = delete;
+  Task(const Task &) = delete;
+  Task &operator=(const Task &) = delete;
   virtual bool execute() = 0;
   virtual std::string taskTypeName() const = 0;
-  void requestCancel(){ cancelRequested.store(true);}
-  void updateStatus(TaskStatus newStatus){status = newStatus;}
+  void requestCancel() { cancelRequested.store(true); }
+  void updateStatus(TaskStatus newStatus) { status = newStatus; }
   bool isCancelRequested() const { return cancelRequested.load(); }
-  const std::string& getId() const {return id;}
-  TaskMode getMode() const {return mode;}
-  int getPriority() const {return priority;}
-  int getMaxRetries() const {return maxRetries;}
-  int getCurrentRetries() const {return currentRetries;}
-  TaskStatus getStatus() const {return status;}
-  const std::string& getFileName() const { return fileName; }
+  const std::string &getId() const { return id; }
+  TaskMode getMode() const { return mode; }
+  int getPriority() const { return priority; }
+  int getMaxRetries() const { return maxRetries; }
+  int getCurrentRetries() const { return currentRetries; }
+  TaskStatus getStatus() const { return status; }
+  const std::string &getFileName() const { return fileName; }
   std::chrono::milliseconds getCycleInterval() const { return cycleInterval; }
-  std::chrono::time_point<std::chrono::system_clock> getCreatedAt() const { return createdAt; }
-  std::chrono::time_point<std::chrono::system_clock> getStartedAt() const { return startedAt; }
-  std::chrono::time_point<std::chrono::system_clock> getFinishedAt() const { return finishedAt; }
-  std::chrono::time_point<std::chrono::system_clock> getNextExecutionTime() const
-  {return nextExecutionTime;}
+  std::chrono::time_point<std::chrono::system_clock> getCreatedAt() const {
+    return createdAt;
+  }
+  std::chrono::time_point<std::chrono::system_clock> getStartedAt() const {
+    return startedAt;
+  }
+  std::chrono::time_point<std::chrono::system_clock> getFinishedAt() const {
+    return finishedAt;
+  }
+  std::chrono::time_point<std::chrono::system_clock>
+  getNextExecutionTime() const {
+    return nextExecutionTime;
+  }
   void incrementRetries() { currentRetries++; }
-  void setNextExecutionTime(std::chrono::time_point<std::chrono::system_clock> t) { nextExecutionTime = t; }
-  void setStartedAt(std::chrono::time_point<std::chrono::system_clock> t) { startedAt = t; }
-  void setFinishedAt(std::chrono::time_point<std::chrono::system_clock> t) { finishedAt = t; }
-  void setCancelledAt(std::chrono::time_point<std::chrono::system_clock> t) { cancelledAt = t; }
+  void
+  setNextExecutionTime(std::chrono::time_point<std::chrono::system_clock> t) {
+    nextExecutionTime = t;
+  }
+  void setStartedAt(std::chrono::time_point<std::chrono::system_clock> t) {
+    startedAt = t;
+  }
+  void setFinishedAt(std::chrono::time_point<std::chrono::system_clock> t) {
+    finishedAt = t;
+  }
+  void setCancelledAt(std::chrono::time_point<std::chrono::system_clock> t) {
+    cancelledAt = t;
+  }
   void setExecutorProcessId(int id) { executorProcessId.store(id); }
   int getExecutorProcessId() const { return executorProcessId.load(); }
+
+  struct TaskPriorityComparator {
+    bool operator()(const Task *a, const Task *b) const {
+      return a->getPriority() < b->getPriority();
+    }
+  };
+
+  struct TaskTimeComparator {
+    bool operator()(const Task *a, const Task *b) const {
+      return a->getNextExecutionTime() > b->getNextExecutionTime();
+    }
+  };
 };

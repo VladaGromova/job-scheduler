@@ -10,6 +10,4 @@ bool DownloadTask::execute() {
   return true;
 }
 
-std::string DownloadTask::taskTypeName() const {
-  return "DownloadTask";
-}
+std::string DownloadTask::taskTypeName() const { return "DownloadTask"; }

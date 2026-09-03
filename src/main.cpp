@@ -4,13 +4,14 @@
 
 #include <iostream>
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   ConfigManager configManager;
   std::string configFilename = (argc > 1) ? argv[1] : "config.txt";
   configManager.loadConfig(configFilename);
   std::cout << "\nMaxThreads: " << configManager.getMaxThreads()
-          << "\nlogFile: " << configManager.getLogFileName()
-          << "\ndefaultMaxRetries: " << configManager.getDefaultMaxRetries() << "\n\n";
+            << "\nlogFile: " << configManager.getLogFileName()
+            << "\ndefaultMaxRetries: " << configManager.getDefaultMaxRetries()
+            << "\n\n";
 
   Logger logger(configManager.getLogFileName());
   Scheduler scheduler(logger);
@@ -26,6 +27,6 @@ int main(int argc, char* argv[]) {
   scheduler.stop();
   executor.stop();
 
-  std::cout<<"Program terminated.\n";
+  std::cout << "Program terminated.\n";
   return 0;
 }

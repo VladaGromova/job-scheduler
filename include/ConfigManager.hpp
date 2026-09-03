@@ -12,5 +12,7 @@ public:
   bool loadConfig(const std::string &configFilename);
   [[nodiscard]] int getMaxThreads() const { return maxThreads; }
   [[nodiscard]] int getDefaultMaxRetries() const { return defaultMaxRetries; }
-  [[nodiscard]] const std::string& getLogFileName() const { return logFileName; }
+  [[nodiscard]] const std::string &getLogFileName() const {
+    return logFileName;
+  }
 };

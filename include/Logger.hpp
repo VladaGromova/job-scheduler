@@ -10,8 +10,9 @@ private:
   std::string logPath;
 
 public:
-  explicit Logger(const std::string& path);
+  explicit Logger(const std::string &path);
   ~Logger();
-  void log(const LogMessage& message);
-  void exportReport (const std::string& taskId, const std::string& outputPath) const;
+  void log(const LogMessage &message);
+  void exportReport(const std::string &taskId,
+                    const std::string &outputPath) const;
 };
